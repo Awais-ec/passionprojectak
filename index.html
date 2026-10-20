@@ -35,39 +35,30 @@
     font-size: 11px; font-family: ui-monospace, Menlo, monospace;
     text-transform: uppercase; letter-spacing: 0.12em;
   }
-  /* Wrapper that hands out the leftover space */
   #stage-wrap {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    flex: 1; min-height: 0;
+    display: flex; align-items: center; justify-content: center;
   }
-  /* Stage is now sized by JS to match the video's aspect ratio exactly */
   #stage {
-    position: relative;
-    background: #000;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-    isolation: isolate;
-    width: 100%;   /* fallback; overwritten by JS */
-    height: 100%;
+    position: relative; background: #000;
+    border: 1px solid var(--border); border-radius: 14px;
+    overflow: hidden; isolation: isolate;
+    width: 100%; height: 100%;
   }
   #mirrored-layer { position: absolute; inset: 0; transform: scaleX(-1); }
   #video {
     position: absolute; inset: 0;
     width: 100%; height: 100%; display: block;
-    object-fit: cover;   /* aspect ratios match → no crop */
+    object-fit: cover;
   }
   #overlay-canvas, #three-canvas {
     position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none;
   }
 
+  /* ---------- HUD ---------- */
   #hud {
     position: absolute; left: 50%; top: 10px;
-    transform: translateX(-50%);
-    z-index: 7;
+    transform: translateX(-50%); z-index: 7;
     display: flex; align-items: center; gap: 10px;
     background: rgba(5, 7, 13, 0.62);
     backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
@@ -88,15 +79,13 @@
   #hud .v.pick { color: var(--pick); }
   #hud .v.glow { color: var(--glow); }
   #hud .v.pink { color: var(--pink); }
-  #hud .dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: currentColor; box-shadow: 0 0 8px currentColor;
-  }
+  #hud .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px currentColor; }
   #hud .divider { width: 1px; height: 12px; background: rgba(255,255,255,0.15); }
   @media (max-width: 620px) {
     #hud { font-size: 10px; padding: 5px 10px; gap: 7px; }
   }
 
+  /* ---------- Debug ---------- */
   #debug {
     position: absolute; left: 10px; bottom: 10px; z-index: 8;
     background: rgba(5, 7, 13, 0.75);
@@ -109,6 +98,42 @@
   #debug .bad { color: var(--bad); }
   #debug .ok { color: var(--ok); }
 
+  /* ---------- Info Button & Modal ---------- */
+  #info-btn {
+    position: absolute; left: 10px; top: 10px; z-index: 8;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(5, 7, 13, 0.7);
+    border: 1px solid rgba(0, 229, 255, 0.4);
+    color: var(--glow); font-family: Georgia, serif; font-style: italic; font-size: 16px; font-weight: bold;
+    display: grid; place-items: center; cursor: pointer;
+    backdrop-filter: blur(8px); box-shadow: 0 0 12px rgba(0, 229, 255, 0.2);
+    transition: all .2s;
+  }
+  #info-btn:hover { background: rgba(0, 229, 255, 0.15); box-shadow: 0 0 16px rgba(0, 229, 255, 0.5); }
+
+  #info-modal {
+    position: absolute; inset: 0; z-index: 20;
+    background: rgba(5, 7, 13, 0.85); backdrop-filter: blur(8px);
+    display: grid; place-items: center; padding: 24px;
+    opacity: 0; pointer-events: none; transition: opacity .25s;
+  }
+  #info-modal.visible { opacity: 1; pointer-events: auto; }
+  .info-content {
+    background: var(--panel); border: 1px solid rgba(0, 229, 255, 0.3);
+    border-radius: 16px; padding: 24px; max-width: 400px; width: 100%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 229, 255, 0.1);
+  }
+  .info-content h2 { margin: 0 0 16px; font-size: 15px; color: var(--text); letter-spacing: 0.1em; text-transform: uppercase; }
+  .info-content ul { margin: 0 0 24px; padding-left: 20px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+  .info-content b { color: var(--glow); font-weight: 600; }
+  .close-btn {
+    width: 100%; padding: 12px;
+    background: linear-gradient(135deg, var(--accent), var(--glow));
+    border: none; border-radius: 10px;
+    color: #05070d; font-weight: 650; font-size: 14px; cursor: pointer;
+  }
+
+  /* ---------- Cursors ---------- */
   .cursor {
     position: absolute; width: 36px; height: 36px; border-radius: 50%;
     transform: translate(-50%, -50%); pointer-events: none; z-index: 9;
@@ -122,29 +147,24 @@
     box-shadow: 0 0 16px currentColor, inset 0 0 8px currentColor;
     transition: transform .12s;
   }
-  .cursor .dot {
-    width: 5px; height: 5px; background: #fff; border-radius: 50%;
-    box-shadow: 0 0 8px rgba(255,255,255,0.9);
-  }
+  .cursor .dot { width: 5px; height: 5px; background: #fff; border-radius: 50%; box-shadow: 0 0 8px rgba(255,255,255,0.9); }
   .cursor.pick .ring { transform: scale(0.72); }
   .cursor.grab .ring { transform: scale(1.25); }
   #cursor-0 { color: var(--glow); }
   #cursor-1 { color: var(--pink); }
 
+  /* ---------- Shape Gallery ---------- */
   #gallery {
     position: absolute; right: 10px; top: 50%;
     transform: translateY(-50%); z-index: 8;
     display: flex; flex-direction: column; gap: 8px; padding: 8px;
-    background: rgba(5, 7, 13, 0.62);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(0, 229, 255, 0.22);
-    border-radius: 18px;
+    background: rgba(5, 7, 13, 0.62); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 229, 255, 0.22); border-radius: 18px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
   }
   .tile {
     position: relative; width: 60px; height: 60px;
-    background: rgba(13, 20, 32, 0.8);
-    border: 1.5px solid rgba(0, 229, 255, 0.25);
+    background: rgba(13, 20, 32, 0.8); border: 1.5px solid rgba(0, 229, 255, 0.25);
     border-radius: 12px; display: grid; place-items: center;
     cursor: pointer; overflow: hidden;
     transition: border-color .15s, transform .15s, box-shadow .15s;
@@ -156,23 +176,18 @@
     filter: drop-shadow(0 0 6px currentColor); pointer-events: none;
   }
   .tile .count {
-    position: absolute; top: 3px; right: 4px;
-    font-size: 9px; color: var(--pick);
+    position: absolute; top: 3px; right: 4px; font-size: 9px; color: var(--pick);
     font-family: ui-monospace, Menlo, monospace; font-weight: 700;
-    opacity: 0; transition: opacity .2s;
-    text-shadow: 0 0 6px rgba(255, 217, 61, 0.9); pointer-events: none;
+    opacity: 0; transition: opacity .2s; text-shadow: 0 0 6px rgba(255, 217, 61, 0.9); pointer-events: none;
   }
   .tile.has-shapes .count { opacity: 1; }
   .tile.hover {
-    border-color: rgba(0, 229, 255, 1);
-    box-shadow: 0 0 28px rgba(0, 229, 255, 0.6);
+    border-color: rgba(0, 229, 255, 1); box-shadow: 0 0 28px rgba(0, 229, 255, 0.6);
     transform: translateX(-6px) scale(1.1);
   }
   .tile.hover .icon { color: #ffffff; transform: scale(1.15); }
   .tile.spawned {
-    animation: tile-spawn .5s ease-out;
-    border-color: var(--pick);
-    box-shadow: 0 0 30px rgba(255, 217, 61, 0.85);
+    animation: tile-spawn .5s ease-out; border-color: var(--pick); box-shadow: 0 0 30px rgba(255, 217, 61, 0.85);
   }
   @keyframes tile-spawn {
     0%   { transform: translateX(-6px) scale(1); }
@@ -182,73 +197,42 @@
   .tile .tip {
     position: absolute; right: calc(100% + 10px); top: 50%;
     transform: translateY(-50%) translateX(6px);
-    background: rgba(5, 7, 13, 0.92);
-    border: 1px solid rgba(0, 229, 255, 0.4);
-    border-radius: 8px; padding: 5px 10px;
-    font-size: 11px; font-family: ui-monospace, Menlo, monospace;
-    color: var(--text); letter-spacing: 0.06em; white-space: nowrap;
-    opacity: 0; pointer-events: none;
-    transition: opacity .15s, transform .15s;
-    box-shadow: 0 0 18px rgba(0, 229, 255, 0.3);
+    background: rgba(5, 7, 13, 0.92); border: 1px solid rgba(0, 229, 255, 0.4);
+    border-radius: 8px; padding: 5px 10px; font-size: 11px; font-family: ui-monospace, Menlo, monospace;
+    color: var(--text); letter-spacing: 0.06em; white-space: nowrap; opacity: 0; pointer-events: none;
+    transition: opacity .15s, transform .15s; box-shadow: 0 0 18px rgba(0, 229, 255, 0.3);
   }
   .tile.hover .tip { opacity: 1; transform: translateY(-50%) translateX(0); }
 
-  #prompt {
-    position: absolute; right: 92px; top: 50%;
-    transform: translateY(-50%); z-index: 7;
-    display: flex; align-items: center; gap: 8px;
-    background: rgba(5, 7, 13, 0.72);
-    border: 1px solid rgba(255, 217, 61, 0.55);
-    border-radius: 999px; padding: 7px 16px;
-    font-size: 12px; font-family: ui-monospace, Menlo, monospace;
-    color: var(--pick); letter-spacing: 0.08em; text-transform: uppercase;
-    pointer-events: none;
-    box-shadow: 0 0 24px rgba(255, 217, 61, 0.35);
-    transition: opacity .2s;
-    max-width: calc(100% - 200px);
-    white-space: nowrap;
-  }
-  #prompt.hidden { opacity: 0; }
-  #prompt .arrow { display: inline-block; animation: nudge 1.1s ease-in-out infinite; font-size: 14px; order: 2; }
-  @keyframes nudge {
-    0%, 100% { transform: translateX(0); }
-    50%      { transform: translateX(3px); }
-  }
-
   @media (max-width: 560px) {
-    .tile { width: 48px; height: 48px; }
-    .tile .icon { width: 26px; height: 26px; }
+    .tile { width: 48px; height: 48px; } .tile .icon { width: 26px; height: 26px; }
     #gallery { gap: 6px; padding: 6px; right: 6px; }
-    #prompt { font-size: 10px; padding: 5px 12px; right: 72px; }
     #debug { font-size: 9px; padding: 6px 8px; }
+    #info-btn { width: 28px; height: 28px; font-size: 14px; }
   }
 
+  /* ---------- Start Overlay ---------- */
   #overlay-msg {
     position: absolute; inset: 0; display: grid; place-items: center;
-    padding: 24px; text-align: center;
-    background: rgba(5, 7, 13, 0.9);
+    padding: 24px; text-align: center; background: rgba(5, 7, 13, 0.9);
     backdrop-filter: blur(6px); z-index: 10; color: var(--muted);
   }
   #overlay-msg[hidden] { display: none; }
   #overlay-msg p { margin: 0; max-width: 46ch; font-size: 14px; line-height: 1.6; }
   #overlay-msg strong { color: var(--text); }
-  #overlay-msg small { display: inline-block; margin-top: 8px; opacity: .75; }
 
+  /* ---------- Controls ---------- */
   #controls { display: flex; gap: 8px; }
   button {
-    appearance: none; border: 1px solid var(--border);
-    background: var(--panel); color: var(--text);
-    font: inherit; font-weight: 550;
-    padding: 9px 16px; border-radius: 9px; cursor: pointer;
-    transition: background .15s, border-color .15s, filter .15s, opacity .15s;
-    touch-action: manipulation; font-size: 13px;
+    appearance: none; border: 1px solid var(--border); background: var(--panel); color: var(--text);
+    font: inherit; font-weight: 550; padding: 9px 16px; border-radius: 9px; cursor: pointer;
+    transition: background .15s, border-color .15s, filter .15s, opacity .15s; touch-action: manipulation; font-size: 13px;
   }
   button:hover:not(:disabled) { border-color: rgba(0, 229, 255, 0.45); background: #111a28; }
   button:disabled { opacity: 0.4; cursor: not-allowed; }
   button.primary {
-    background: linear-gradient(135deg, var(--accent), var(--glow));
-    border-color: transparent; color: #05070d; font-weight: 650;
-    box-shadow: 0 0 16px rgba(0, 229, 255, 0.3);
+    background: linear-gradient(135deg, var(--accent), var(--glow)); border-color: transparent;
+    color: #05070d; font-weight: 650; box-shadow: 0 0 16px rgba(0, 229, 255, 0.3);
   }
   button.primary:hover:not(:disabled) { filter: brightness(1.12); }
   #controls button { flex: 1; }
@@ -273,6 +257,21 @@
       <div class="cursor" id="cursor-0"><div class="ring"></div><div class="dot"></div></div>
       <div class="cursor" id="cursor-1"><div class="ring"></div><div class="dot"></div></div>
 
+      <button id="info-btn" title="Instructions">i</button>
+
+      <div id="info-modal">
+        <div class="info-content">
+          <h2>How to Play</h2>
+          <ul>
+            <li><b>Pinch</b> near a shape on the right rail to spawn it.</li>
+            <li><b>One-hand grab</b>: Tilt or twist your palm to rotate the shape in 3D.</li>
+            <li><b>Two-hand grab</b>: Pinch the same shape with both hands. <b>Spread apart</b> to enlarge, <b>bring together</b> to shrink.</li>
+            <li>Click <b>Clear all</b> below to remove shapes.</li>
+          </ul>
+          <button id="close-info" class="close-btn">Got it</button>
+        </div>
+      </div>
+
       <div id="hud">
         <div class="item">
           <span class="dot" id="h0-dot" style="color:var(--muted)"></span>
@@ -294,11 +293,6 @@
         <div>model <b id="dbg-model">—</b></div>
         <div>hands <b id="dbg-hand">—</b></div>
         <div>fps <b id="dbg-fps">—</b></div>
-      </div>
-
-      <div id="prompt" class="hidden">
-        <span id="prompt-text">Point at a shape, pinch to spawn</span>
-        <span class="arrow">→</span>
       </div>
 
       <div id="gallery">
@@ -344,10 +338,7 @@
       <div id="overlay-msg">
         <p id="overlay-text">
           <strong>Show your hands to the camera.</strong><br>
-          <small>
-            <b>Pinch</b> near a shape with <b>one hand</b> to grab &amp; move &amp; rotate it.<br>
-            <b>Pinch with both hands</b> on the same shape to <b>spread apart → enlarge</b>, <b>bring together → shrink</b>, and twist to rotate.
-          </small>
+          <small>Click the <b>(i)</b> button in the top-left for instructions.</small>
         </p>
       </div>
     </div>
@@ -399,8 +390,16 @@ const dbgModel      = document.getElementById('dbg-model');
 const dbgHand       = document.getElementById('dbg-hand');
 const dbgFps        = document.getElementById('dbg-fps');
 const cursorEls     = [document.getElementById('cursor-0'), document.getElementById('cursor-1')];
-const promptEl      = document.getElementById('prompt');
-const promptTextEl  = document.getElementById('prompt-text');
+
+const infoBtn       = document.getElementById('info-btn');
+const infoModal     = document.getElementById('info-modal');
+const closeInfoBtn  = document.getElementById('close-info');
+
+infoBtn.addEventListener('click', () => infoModal.classList.add('visible'));
+closeInfoBtn.addEventListener('click', () => infoModal.classList.remove('visible'));
+infoModal.addEventListener('click', (e) => {
+  if (e.target === infoModal) infoModal.classList.remove('visible');
+});
 
 /* --------------------------------------------------------------- three.js */
 const renderer = new THREE.WebGLRenderer({
@@ -441,11 +440,11 @@ const HALO_GEOM = new THREE.RingGeometry(0.55, 0.6, 64);
 const shapes = [];
 const MAX_SHAPES = 12;
 
-const SCALE_MIN = 0.25;
+const SCALE_MIN = 0.1;
 const SCALE_MAX = 3.5;
 
 /* ============================================================
-   MEDIAPIPE HANDS — Lite model, 2 hands
+   MEDIAPIPE HANDS
    ============================================================ */
 let hands = null;
 let mpCamera = null;
@@ -465,9 +464,9 @@ function initHands() {
     });
     hands.setOptions({
       maxNumHands: 2,
-      modelComplexity: 0,            // Lite model = fastest
-      minDetectionConfidence: 0.5,
-      minTrackingConfidence: 0.5,
+      modelComplexity: 0,
+      minDetectionConfidence: 0.3, // Lowered for better tracking
+      minTrackingConfidence: 0.3,  // Lowered for better tracking
       selfieMode: true,
     });
     hands.onResults((results) => {
@@ -504,7 +503,6 @@ async function startCamera() {
     await new Promise(res => video.addEventListener('loadedmetadata', res, { once: true }));
   }
   cameraRunning = true;
-  // Once metadata is known, snap the stage to the video's actual aspect
   resize();
 }
 function stopCamera() {
@@ -528,7 +526,7 @@ const handSlots = [
     grabbingShape: null, singleHandScale: 1 },
 ];
 
-const HAND_TIMEOUT = 350;
+const HAND_TIMEOUT = 400; // Slightly longer timeout to prevent flicker
 
 function matchHandsToSlots() {
   const list = rawHands;
@@ -651,9 +649,13 @@ function updateSlotPinch(slot, lm) {
   const handSize = d3(lm[0], lm[9]);
   if (handSize < 0.04) { slot.pinch = false; return; }
   const ratio = tipDist / handSize;
-  pinchRatioSmooth[slot.idx] = pinchRatioSmooth[slot.idx] * 0.3 + ratio * 0.7;
-  if (!slot.pinch && pinchRatioSmooth[slot.idx] < 0.36) slot.pinch = true;
-  else if (slot.pinch && pinchRatioSmooth[slot.idx] > 0.55) slot.pinch = false;
+  
+  // Heavily smooth the ratio to prevent flickering
+  pinchRatioSmooth[slot.idx] = pinchRatioSmooth[slot.idx] * 0.5 + ratio * 0.5;
+  
+  // Wider hysteresis band for much easier pinching
+  if (!slot.pinch && pinchRatioSmooth[slot.idx] < 0.42) slot.pinch = true;
+  else if (slot.pinch && pinchRatioSmooth[slot.idx] > 0.65) slot.pinch = false;
 }
 
 /* ---------------------------------------------------------- 2D overlay */
@@ -842,19 +844,24 @@ function updateTileCounts() {
     t.classList.toggle('has-shapes', n > 0);
   }
 }
-function findNearestShape(wx, wy, radius = 0.55) {
-  let best = null, bestD = radius;
+
+// Scale-aware grabbing radius so huge shapes are easy to grab
+function findNearestShape(wx, wy, baseRadius = 0.6) {
+  let best = null, bestD = Infinity;
   for (const s of shapes) {
     const dx = s.current.x - wx, dy = s.current.y - wy;
+    const effectiveRadius = baseRadius + s.currentScale * 0.4; // Radius grows with shape
     const d = Math.hypot(dx, dy);
-    if (d < bestD) { bestD = d; best = s; }
+    if (d < effectiveRadius && d < bestD) {
+      bestD = d;
+      best = s;
+    }
   }
   return best;
 }
 
 /* ============================================================
-   RESIZE — fits the stage to the video's aspect ratio so cover
-   neither crops nor letterboxes. This is the key fix.
+   RESIZE
    ============================================================ */
 function resize() {
   const wrapRect = stageWrap.getBoundingClientRect();
@@ -864,23 +871,15 @@ function resize() {
   const wrapAR  = wrapRect.width / wrapRect.height;
 
   let w, h;
-  if (videoAR > wrapAR) {
-    // video is wider than available → fit width
-    w = wrapRect.width;
-    h = w / videoAR;
-  } else {
-    // video is taller → fit height
-    h = wrapRect.height;
-    w = h * videoAR;
-  }
+  if (videoAR > wrapAR) { w = wrapRect.width; h = w / videoAR; }
+  else                  { h = wrapRect.height; w = h * videoAR; }
+
   w = Math.max(1, Math.floor(w));
   h = Math.max(1, Math.floor(h));
 
-  // Size the stage exactly to the video AR
   stage.style.width  = w + 'px';
   stage.style.height = h + 'px';
 
-  // Resize canvases to match
   renderer.setSize(w, h, false);
   overlayCanvas.width  = w;
   overlayCanvas.height = h;
@@ -898,14 +897,11 @@ let hoverTile = null;
 let lastFrameAt = performance.now();
 let fpsSmooth = 0;
 
-// Adaptive smoothing — if the fingertip jumps more than 40px, snap
-// almost the whole way there (removes "delay" during fast moves).
-const CURSOR_SMOOTH = 0.65;
-const CURSOR_SNAP_DIST = 40;
+const CURSOR_SMOOTH = 0.8; // Snappier cursor
+const CURSOR_SNAP_DIST = 30;
 const CURSOR_SNAP = 0.95;
-const PALM_SMOOTH = 0.7;
-const QUAT_SMOOTH = 0.4;
-const GRAB_RADIUS = 0.6;
+const PALM_SMOOTH = 0.6;
+const QUAT_SMOOTH = 0.5;
 
 function getTileRect(t) {
   const sRect = stage.getBoundingClientRect();
@@ -918,57 +914,80 @@ function tileUnderCursorEl(cursorEl) {
   return el && el.closest ? el.closest('.tile') : null;
 }
 
-function onPinchStart(slot, pinchWorld) {
+/* --- Interaction Handlers --- */
+function startTwoHandGrab(shape, hA, hB) {
+  // Detach from old shapes if any
+  for (const h of [hA, hB]) {
+    if (h.grabbingShape && h.grabbingShape !== shape) {
+      h.grabbingShape.grabbedBy = h.grabbingShape.grabbedBy.filter(id => id !== h.idx);
+    }
+  }
+  
+  shape.grabbedBy = [hA.idx, hB.idx];
+  shape.grabbedBy.sort((a, b) => a - b);
+  
+  hA.grabbingShape = shape;
+  hB.grabbingShape = shape;
+
+  const pa = hA.smoothedPalm;
+  const pb = hB.smoothedPalm;
+  if (pa && pb) {
+    shape.twoHandStartDist  = Math.max(0.1, Math.hypot(pa.x - pb.x, pa.y - pb.y));
+    shape.twoHandStartScale = shape.currentScale;
+    shape.twoHandStartAngle = Math.atan2(pb.y - pa.y, pb.x - pa.x);
+    shape.twoHandStartQuat.copy(shape.currentQuat);
+  }
+}
+
+function handleHandStart(slot, otherSlot) {
   const tile = tileUnderCursorEl(cursorEls[slot.idx]);
+  
+  // 1. Spawn from tile
   if (tile) {
     const key = tile.dataset.shape;
-    const newShape = spawnShape(key, pinchWorld);
+    const newShape = spawnShape(key, slot.smoothedPalm);
     newShape.grabbedBy = [slot.idx];
     slot.grabbingShape = newShape;
     slot.singleHandScale = newShape.currentScale;
-    slot.singleHandQuat  = newShape.currentQuat.clone();
+    slot.singleHandQuat = newShape.currentQuat.clone();
     tile.classList.add('spawned');
     setTimeout(() => tile.classList.remove('spawned'), 500);
     return;
   }
 
-  const nearShape = findNearestShape(pinchWorld.x, pinchWorld.y, GRAB_RADIUS);
-  if (!nearShape) return;
-  if (nearShape.grabbedBy.includes(slot.idx)) return;
+  // 2. If the other hand is holding a shape, join it automatically
+  if (otherSlot.grabbingShape) {
+    const shape = otherSlot.grabbingShape;
+    if (shape.grabbedBy.length === 1) {
+      startTwoHandGrab(shape, slot, otherSlot);
+      return;
+    }
+  }
 
-  if (nearShape.grabbedBy.length === 0) {
+  // 3. Find nearest shape (with scale-aware radius)
+  const nearShape = findNearestShape(slot.smoothedPalm.x, slot.smoothedPalm.y, 0.8);
+  if (nearShape) {
     nearShape.grabbedBy = [slot.idx];
     slot.grabbingShape = nearShape;
     slot.singleHandScale = nearShape.currentScale;
-    slot.singleHandQuat  = nearShape.currentQuat.clone();
-  } else if (nearShape.grabbedBy.length === 1) {
-    nearShape.grabbedBy.push(slot.idx);
-    slot.grabbingShape = nearShape;
-    const otherSlot = handSlots[nearShape.grabbedBy[0]];
-    const pa = otherSlot.palmWorld;
-    const pb = pinchWorld;
-    if (pa && pb) {
-      nearShape.twoHandStartDist  = Math.max(0.05, Math.hypot(pa.x - pb.x, pa.y - pb.y));
-      nearShape.twoHandStartScale = nearShape.currentScale;
-      nearShape.twoHandStartAngle = Math.atan2(pb.y - pa.y, pb.x - pa.x);
-      nearShape.twoHandStartQuat.copy(nearShape.currentQuat);
-    }
+    slot.singleHandQuat = nearShape.currentQuat.clone();
   }
 }
 
-function onPinchEnd(slot) {
+function handleHandEnd(slot) {
+  const shape = slot.grabbingShape;
+  if (!shape) return;
   slot.grabbingShape = null;
-  for (const s of shapes) {
-    const i = s.grabbedBy.indexOf(slot.idx);
-    if (i === -1) continue;
-    s.grabbedBy.splice(i, 1);
-    if (s.grabbedBy.length === 1) {
-      const remaining = handSlots[s.grabbedBy[0]];
-      remaining.singleHandScale = s.currentScale;
-      remaining.singleHandQuat  = s.currentQuat.clone();
-      s.twoHandStartDist  = null;
-      s.twoHandStartAngle = 0;
-    }
+  
+  shape.grabbedBy = shape.grabbedBy.filter(id => id !== slot.idx);
+  
+  if (shape.grabbedBy.length === 1) {
+    // Dropped to single hand
+    const remaining = handSlots[shape.grabbedBy[0]];
+    remaining.singleHandScale = shape.currentScale;
+    remaining.singleHandQuat = shape.currentQuat.clone();
+    remaining.grabbingShape = shape;
+    shape.twoHandStartDist = null;
   }
 }
 
@@ -994,7 +1013,7 @@ function animate(t) {
       slot.lastSeen = now;
     } else {
       if (now - slot.lastSeen > HAND_TIMEOUT) {
-        if (slot.landmarks) onPinchEnd(slot);
+        if (slot.landmarks) handleHandEnd(slot);
         slot.landmarks = null;
         slot.pinch = false;
         slot.wasPinching = false;
@@ -1018,7 +1037,6 @@ function animate(t) {
         const dx = tip.x - slot.smoothedTip.x;
         const dy = tip.y - slot.smoothedTip.y;
         const dist = Math.hypot(dx, dy);
-        // Adaptive: snap on fast moves, smooth on small jitter
         const a = dist > CURSOR_SNAP_DIST ? CURSOR_SNAP : CURSOR_SMOOTH;
         slot.smoothedTip.x += dx * a;
         slot.smoothedTip.y += dy * a;
@@ -1040,6 +1058,41 @@ function animate(t) {
     }
   }
 
+  // --- Handle Pinch State Changes ---
+  const h0 = handSlots[0];
+  const h1 = handSlots[1];
+  
+  const h0Started = h0.pinch && !h0.wasPinching;
+  const h1Started = h1.pinch && !h1.wasPinching;
+  const h0Ended = !h0.pinch && h0.wasPinching;
+  const h1Ended = !h1.pinch && h1.wasPinching;
+
+  // 1. Both hands pinched at the same time? Grab closest to midpoint.
+  if (h0Started && h1Started && h0.smoothedPalm && h1.smoothedPalm) {
+    const mx = (h0.smoothedPalm.x + h1.smoothedPalm.x) / 2;
+    const my = (h0.smoothedPalm.y + h1.smoothedPalm.y) / 2;
+    const target = findNearestShape(mx, my, 1.5);
+    if (target) {
+      startTwoHandGrab(target, h0, h1);
+    } else {
+      // If no shape found, they might be trying to spawn
+      handleHandStart(h0, h1);
+      handleHandStart(h1, h0);
+    }
+  } else {
+    // 2. Sequential pinches
+    if (h0Started) handleHandStart(h0, h1);
+    if (h1Started) handleHandStart(h1, h0);
+  }
+
+  // 3. Releases
+  if (h0Ended) handleHandEnd(h0);
+  if (h1Ended) handleHandEnd(h1);
+
+  h0.wasPinching = h0.pinch;
+  h1.wasPinching = h1.pinch;
+
+  // --- Cursor Visuals ---
   for (const slot of handSlots) {
     const el = cursorEls[slot.idx];
     if (slot.smoothedTip) {
@@ -1053,14 +1106,7 @@ function animate(t) {
     }
   }
 
-  for (const slot of handSlots) {
-    const pinchStarted = slot.pinch && !slot.wasPinching;
-    const pinchEnded   = !slot.pinch && slot.wasPinching;
-    slot.wasPinching = slot.pinch;
-    if (pinchStarted && slot.palmWorld) onPinchStart(slot, slot.palmWorld);
-    if (pinchEnded) onPinchEnd(slot);
-  }
-
+  // --- Tile Hover ---
   let hoveredTile = null;
   const activeSlot = handSlots.find(s => s.grabbingShape == null && s.smoothedTip);
   if (activeSlot) hoveredTile = tileUnderCursorEl(cursorEls[activeSlot.idx]);
@@ -1068,11 +1114,12 @@ function animate(t) {
   hoverTile = hoveredTile;
   const hoverRectForOverlay = hoveredTile ? getTileRect(hoveredTile) : null;
 
+  // --- Update Shapes ---
   for (const s of shapes) {
     if (s.grabbedBy.length === 1) {
+      // Single-hand: position + rotation
       const slot = handSlots[s.grabbedBy[0]];
       if (slot.palmWorld && slot.smoothedPalm) {
-        // If grabbed shape is far from hand, snap so it doesn't "fly" in
         const dx = slot.smoothedPalm.x - s.current.x;
         const dy = slot.smoothedPalm.y - s.current.y;
         if (Math.hypot(dx, dy) > 1.5) {
@@ -1083,7 +1130,7 @@ function animate(t) {
         s.target.z = 0.35;
       }
       if (slot.smoothedQuat) s.targetQuat.slerp(slot.smoothedQuat, 0.5);
-      if (slot.singleHandScale) s.targetScale = slot.singleHandScale;
+      s.targetScale = slot.singleHandScale; // Scale is locked
 
       s.current.lerp(s.target, 0.65);
       s.currentScale += (s.targetScale - s.currentScale) * 0.2;
@@ -1092,6 +1139,7 @@ function animate(t) {
       s.group.position.copy(s.current);
     }
     else if (s.grabbedBy.length === 2) {
+      // Two-hand: position (midpoint) + scale + rotation
       const slotA = handSlots[s.grabbedBy[0]];
       const slotB = handSlots[s.grabbedBy[1]];
       const pa = slotA.smoothedPalm;
@@ -1101,7 +1149,9 @@ function animate(t) {
         s.target.y = (pa.y + pb.y) / 2;
         s.target.z = 0.35;
 
-        const d = Math.max(0.05, Math.hypot(pa.x - pb.x, pa.y - pb.y));
+        const d = Math.max(0.1, Math.hypot(pa.x - pb.x, pa.y - pb.y));
+        
+        // Scale logic
         if (s.twoHandStartDist) {
           const ratio = d / s.twoHandStartDist;
           let newScale = s.twoHandStartScale * ratio;
@@ -1109,10 +1159,13 @@ function animate(t) {
           s.targetScale = newScale;
         }
 
-        const angle = Math.atan2(pb.y - pa.y, pb.x - pa.x);
-        const dAngle = angle - s.twoHandStartAngle;
-        const deltaQ = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), dAngle);
-        s.targetQuat.copy(s.twoHandStartQuat).premultiply(deltaQ);
+        // Rotation logic (only rotate if hands are sufficiently apart to avoid violent spinning)
+        if (d > 0.25) {
+          const angle = Math.atan2(pb.y - pa.y, pb.x - pa.x);
+          const dAngle = angle - s.twoHandStartAngle;
+          const deltaQ = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), dAngle);
+          s.targetQuat.copy(s.twoHandStartQuat).premultiply(deltaQ);
+        }
       }
       s.current.lerp(s.target, 0.65);
       s.currentScale += (s.targetScale - s.currentScale) * 0.3;
@@ -1121,6 +1174,7 @@ function animate(t) {
       s.group.position.copy(s.current);
     }
     else {
+      // Idle
       s.target.z = 0.2;
       s.targetScale = Math.max(SCALE_MIN, Math.min(SCALE_MAX, s.targetScale));
       s.current.lerp(s.target, 0.14);
@@ -1148,6 +1202,7 @@ function animate(t) {
     }
   }
 
+  // --- HUD ---
   const states = handSlots.map(slot => {
     if (!slot.landmarks) return { text: '—', cls: '' };
     if (slot.grabbingShape) {
@@ -1173,20 +1228,6 @@ function animate(t) {
   const handsSeen = handSlots.filter(s => s.landmarks).length;
   dbgHand.textContent = handsSeen > 0 ? `${handsSeen}/2` : (modelReady ? 'searching' : '—');
   dbgHand.className = handsSeen > 0 ? 'ok' : (modelReady ? 'bad' : '');
-
-  const anyHand = handsSeen > 0;
-  const anyGrab = handSlots.some(s => s.grabbingShape);
-  const showPrompt = anyHand && !anyGrab;
-  if (showPrompt) {
-    if (hoveredTile) {
-      promptTextEl.textContent = `Pinch to spawn ${SHAPE_DEFS[hoveredTile.dataset.shape].label}`;
-    } else if (shapes.length > 0) {
-      promptTextEl.textContent = 'Pinch near a shape to grab · both hands to scale';
-    } else {
-      promptTextEl.textContent = 'Point at a shape, pinch to spawn';
-    }
-  }
-  promptEl.classList.toggle('hidden', !showPrompt);
 
   drawOverlay(handSlots, hoverRectForOverlay);
   renderer.render(scene, camera);
@@ -1247,7 +1288,6 @@ function stop() {
   h1StateEl.textContent = '—'; h1StateEl.className = 'v pink';
   h0DotEl.style.color = 'var(--muted)'; h1DotEl.style.color = 'var(--muted)';
   scaleItemEl.style.display = 'none';
-  promptEl.classList.add('hidden');
   dbgCam.textContent = '—'; dbgCam.className = '';
   dbgHand.textContent = '—'; dbgHand.className = '';
   overlayText.innerHTML = 'Camera stopped. Press <strong>Start camera</strong> to resume.';
